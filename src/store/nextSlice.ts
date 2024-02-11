@@ -1,16 +1,17 @@
-import { StoreProduct } from '@/types'
+import { StoreProduct } from '@/types/index'
 import { createSlice } from '@reduxjs/toolkit'
 
-interface nextState {
+interface NextState {
   productData: StoreProduct[]
   favouriteData: StoreProduct[]
-  allProductData: StoreProduct[]
+  allProducts: StoreProduct[]
   userInfo: null | string
 }
-const initialState: nextState = {
+
+const initialState: NextState = {
   productData: [],
   favouriteData: [],
-  allProductData: [],
+  allProducts: [],
   userInfo: null,
 }
 
@@ -71,13 +72,13 @@ export const nextSlice = createSlice({
       state.favouriteData = []
     },
     addUser: (state, action) => {
-      state.userInfo === action.payload
+      state.userInfo = action.payload
     },
     removeUser: (state) => {
       state.userInfo = null
     },
     setAllProductData: (state, action) => {
-      state.allProductData === action.payload
+      state.allProducts === action.payload
     },
   },
 })

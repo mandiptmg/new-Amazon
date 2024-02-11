@@ -1,28 +1,23 @@
 'use client'
-import { FaBars, FaSearch, FaRegUser } from 'react-icons/fa'
+import { FaBars, FaRegUser, FaSearch } from 'react-icons/fa'
 import { FaLocationDot } from 'react-icons/fa6'
-import { IoMdArrowDropdown, IoIosArrowForward } from 'react-icons/io'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { IoIosArrowForward, IoMdArrowDropdown } from 'react-icons/io'
 import { useSelector, useDispatch } from 'react-redux'
 import Image from 'next/image'
 import logo from '../../public/logo.png'
 import cart from '../../public/cartIcon.png'
-
 import Link from 'next/link'
 import BottomHeader from './BottomHeader'
 import { StateProps } from '@/types'
+import { useSession, signIn } from 'next-auth/react'
+import { useEffect } from 'react'
 import { addUser } from '@/store/nextSlice'
-import { useEffect, useState } from 'react'
 const Header = () => {
-  const { productData, favouriteData, userInfo, allProductData } = useSelector(
+  const { data: session } = useSession()
+  const { productData, favouriteData, userInfo } = useSelector(
     (state: StateProps) => state.next
   )
-  const [allData, setAllData] = useState([])
   const dispatch = useDispatch()
-  const { data: session } = useSession()
-  useEffect(() => {
-    setAllData(allProductData.allProductData)
-  }, [allProductData])
   useEffect(() => {
     if (session) {
       dispatch(
@@ -33,12 +28,16 @@ const Header = () => {
         })
       )
     }
-  },[])
+  }, [session])
+  // useEffect(() => {
+  //   setAllData(allProductData.allProductData)
+  // }, [allProductData])
+
   return (
     <div>
       <div className='bg-slate-950 text-white p-1 '>
         <div>
-          <div className='flex w-full mx-auto justify-between gap-2 items-center'>
+          <div className='flex w-full mx-auto h-auto justify-between gap-2 items-center'>
             {/* log and deliver */}
             <div className='flex items-center'>
               {/* log and bar */}
@@ -71,20 +70,17 @@ const Header = () => {
             </div>
             {/* input and buttom */}
 
-            <div className='hidden xl:w-[50%] w-[37%] lg:block'>
-              <form className='flex items-center '>
-                <input
-                  type='text'
-                  className='px-[10px] text-black py-[7px] rounded-l w-full outline-none'
-                  placeholder='search amazon'
-                />
-                <button
-                  type='submit'
-                  className='p-[7px] rounded-r bg-orange-400 hover:bg-orange-500'
-                >
-                  <FaSearch className='text-2xl text-gray-800  ' />
-                </button>
-              </form>
+            <div className='flex-1 h-10 hidden lg:inline-flex items-center justify-between relative'>
+              <input
+                // onChange={handleSearch}
+                // value={searchQuery}
+                className='w-full h-full rounded-md px-2 placeholder:text-sm text-base text-black border-[3px] border-transparent outline-none focus-visible:border-amazon_yellow'
+                type='text'
+                placeholder='Search Amazon'
+              />
+              <span className='w-12 h-full bg-amazon_yellow text-black text-2xl flex items-center justify-center absolute right-0 rounded-tr-md rounded-br-md'>
+                <FaSearch />
+              </span>
             </div>
 
             {/*flag and language list like signin order and cart */}
@@ -111,23 +107,25 @@ const Header = () => {
               </div>
               {/* sign in and out */}
               {userInfo ? (
-                <div className='flex items-center px-2 border border-transparent hover:border-white cursor-pointer duration-300 h-[70%] gap-1'>
+                <div className='flex items-center border1 cursor-pointer p-2 gap-1'>
                   <Image
-                    alt={userInfo.name}
                     src={userInfo.image}
-                    width={30}
-                    height={30}
-                    className='w-8 h-8 rounded-full object-cover'
+                    width={50}
+                    height={50}
+                    alt={userInfo.name}
+                    className='w-8 h-8 rounded-full object-cover '
                   />
-                  <div className='text-xs text-gray-100 flex flex-col justify-between'>
-                    <p className='text-white font-bold'>{userInfo.name}</p>
+                  <div className='text-xs text-gray-400'>
+                    <h1 className='font-semibold text-white text-sm'>
+                      {userInfo.name}
+                    </h1>
                     <p>{userInfo.email}</p>
                   </div>
                 </div>
               ) : (
                 <div
-                  className='border1 cursor-pointer p-2'
                   onClick={() => signIn()}
+                  className='border1 cursor-pointer p-2'
                 >
                   <div className='hidden lg:block'>
                     <h1 className='text-xs  text-gray-400'>
@@ -145,6 +143,7 @@ const Header = () => {
                   </div>
                 </div>
               )}
+
               {/* return and order */}
               <div className='border1 p-2 hidden lg:block'>
                 <h1 className='text-xs relative text-gray-400'>

@@ -8,16 +8,22 @@ import logo from '../../public/logo.png'
 import cart from '../../public/cartIcon.png'
 import Link from 'next/link'
 import BottomHeader from './BottomHeader'
-import { StateProps } from '@/types'
+import { usePathname } from 'next/navigation'
+import { StateProps, StoreProduct } from '@/types'
 import { useSession, signIn } from 'next-auth/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { addUser } from '@/store/nextSlice'
+import SearchProducts from './SearchProducts'
 const Header = () => {
+  const [allData, setAllData] = useState([])
   const { data: session } = useSession()
-  const { productData, favouriteData, userInfo } = useSelector(
+  const { productData, favouriteData, userInfo, allProducts } = useSelector(
     (state: StateProps) => state.next
   )
   const dispatch = useDispatch()
+  useEffect(() => {
+    setAllData(allProducts.allProducts)
+  }, [allProducts])
   useEffect(() => {
     if (session) {
       dispatch(
@@ -29,15 +35,26 @@ const Header = () => {
       )
     }
   }, [session])
+  // Search area
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filteredProducts, setFilteredProducts] = useState([])
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }
+
   // useEffect(() => {
-  //   setAllData(allProductData.allProductData)
-  // }, [allProductData])
+  //   const filtered = allData.filter((item: StoreProduct) =>
+  //     item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  //   )
+  //   setFilteredProducts(filtered)
+  // }, [searchQuery])
 
   return (
     <div>
       <div className='bg-slate-950 text-white p-1 '>
         <div>
-          <div className='flex w-full mx-auto h-auto justify-between gap-2 items-center'>
+          <div className='flex w-full px-4 mx-auto h-auto justify-between gap-2 items-center'>
             {/* log and deliver */}
             <div className='flex items-center'>
               {/* log and bar */}
@@ -68,19 +85,42 @@ const Header = () => {
                 </div>
               </div>
             </div>
+
             {/* input and buttom */}
 
             <div className='flex-1 h-10 hidden lg:inline-flex items-center justify-between relative'>
               <input
-                // onChange={handleSearch}
-                // value={searchQuery}
-                className='w-full h-full rounded-md px-2 placeholder:text-sm text-base text-black border-[3px] border-transparent outline-none focus-visible:border-amazon_yellow'
+                onChange={handleSearch}
+                value={searchQuery}
+                className='w-full h-full rounded-md px-2 placeholder:text-sm text-base text-black  outline-none focus-visible:outline-yellow-500'
                 type='text'
                 placeholder='Search Amazon'
               />
-              <span className='w-12 h-full bg-amazon_yellow text-black text-2xl flex items-center justify-center absolute right-0 rounded-tr-md rounded-br-md'>
+              <button className='w-12 bg-yellow-500 h-full  text-black text-2xl flex items-center justify-center absolute right-0 rounded-tr-md rounded-br-md'>
                 <FaSearch />
-              </span>
+              </button>
+              {searchQuery &&
+                filteredProducts.map((item: StoreProduct) => (
+                  <Link
+                    href={{
+                      pathname: `${item._id}`,
+                      query: {
+                        _id: item._id,
+                        title: item.title,
+                        description: item.description,
+                        oldPrice: item.oldPrice,
+                        price: item.price,
+                        brand: item.brand,
+                        image: item.image,
+                        isNew: item.isNew,
+                      },
+                    }}
+                    onClick={() => setSearchQuery('')}
+                    key={item._id}
+                  >
+                    <SearchProducts item={item} />
+                  </Link>
+                ))}
             </div>
 
             {/*flag and language list like signin order and cart */}
@@ -162,7 +202,7 @@ const Header = () => {
               <div className='flex border1 p-3 items-end'>
                 <div className='relative'>
                   <Link href='/cart'>
-                    <Image src={cart} alt='cart' width={38} height={26} />
+                    <Image src={cart} alt='cart' width={40} height={26} />
                   </Link>
                   <span className='absolute -top-1 text-sm font-bold left-[45%] text-[#f08804]'>
                     {productData ? productData.length : 0}
@@ -192,12 +232,11 @@ const Header = () => {
         </div>
       </div>
       {/* bottom location and delivery */}
-      <div className='lg:hidden text-white bg-slate-700'>
+      <div className='lg:hidden text-white px-4 py-2 bg-slate-700'>
         <div className='flex border1 items-center gap-2'>
-          <FaLocationDot className='text-base ' />
-          <h1 className='text-sm '>
-            Deliver to
-            <span className='text-white text-base font-bold'> Nepal</span>
+          <FaLocationDot className='text-lg ' />
+          <h1 className='text-white text-base font-semibold '>
+            Deliver to Nepal
           </h1>
         </div>
       </div>

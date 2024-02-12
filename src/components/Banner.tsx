@@ -20,16 +20,33 @@ const Banner = () => {
         interval={3000}
       >
         <div>
-          <Image priority src={sliderImg_1} alt='sliderImg' />
+          <Image
+            priority
+            src={sliderImg_1}
+            alt='sliderImg'
+            className='object-cover w-screen h-[80vh]  '
+          />
         </div>
         <div>
-          <Image src={sliderImg_2} alt='sliderImg' />
+          <Image
+            src={sliderImg_2}
+            alt='sliderImg'
+            className='object-cover w-screen h-[80vh]  '
+          />
         </div>
         <div>
-          <Image src={sliderImg_3} alt='sliderImg' />
+          <Image
+            src={sliderImg_3}
+            alt='sliderImg'
+            className='object-cover w-screen h-[80vh]  '
+          />
         </div>
         <div>
-          <Image src={sliderImg_4} alt='sliderImg' />
+          <Image
+            src={sliderImg_4}
+            alt='sliderImg'
+            className='object-cover w-screen h-[80vh]  '
+          />
         </div>
       </Carousel>
       <div className='w-full h-40 bg-gradient-to-t from-gray-100 to-transparent absolute bottom-0 z-20'></div>

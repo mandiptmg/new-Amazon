@@ -77,7 +77,7 @@ export const nextSlice = createSlice({
     removeUser: (state) => {
       state.userInfo = null
     },
-    setAllProductData: (state, action) => {
+    setAllProducts: (state, action) => {
       state.allProducts === action.payload
     },
   },
@@ -94,6 +94,6 @@ export const {
   resetFavourite,
   addUser,
   removeUser,
-  setAllProductData,
+  setAllProducts,
 } = nextSlice.actions
 export default nextSlice.reducer

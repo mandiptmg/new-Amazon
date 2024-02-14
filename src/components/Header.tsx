@@ -1,5 +1,14 @@
 'use client'
-import { FaBars, FaRegUser, FaSearch } from 'react-icons/fa'
+import {
+  FaBars,
+  FaChevronDown,
+  FaChevronRight,
+  FaRegUser,
+  FaSearch,
+  FaTimes,
+  FaUserCircle,
+} from 'react-icons/fa'
+import { GoHome } from 'react-icons/go'
 import { FaLocationDot } from 'react-icons/fa6'
 import { IoIosArrowForward, IoMdArrowDropdown } from 'react-icons/io'
 import { useSelector, useDispatch } from 'react-redux'
@@ -14,8 +23,25 @@ import { useSession, signIn } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { addUser } from '@/store/nextSlice'
 import SearchProducts from './SearchProducts'
+import { motion } from 'framer-motion'
+import { navItems } from '@/data/Data'
+interface MenuItem {
+  title: string
+  items: string[]
+}
 const Header = () => {
   const [allData, setAllData] = useState([])
+  const [slider, setSlider] = useState(false)
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
+
+  const handleClick = (title: string) => {
+    if (expandedCategory === title) {
+      setExpandedCategory(null)
+    } else {
+      setExpandedCategory(title)
+    }
+  }
+
   const { data: session } = useSession()
   const { productData, favouriteData, userInfo, allProducts } = useSelector(
     (state: StateProps) => state.next
@@ -35,6 +61,22 @@ const Header = () => {
       )
     }
   }, [session])
+  useEffect(() => {
+    const handleChange = () => {
+      if (window.innerWidth >= 1024) {
+        setSlider(false)
+      }
+    }
+
+    handleChange() // Initial call to set the initial state
+
+    window.addEventListener('resize', handleChange)
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('resize', handleChange)
+    }
+  }, [])
   // Search area
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredProducts, setFilteredProducts] = useState([])
@@ -54,12 +96,15 @@ const Header = () => {
     <div>
       <div className='bg-slate-950 text-white p-1 '>
         <div>
-          <div className='flex w-full px-4 mx-auto h-auto justify-between gap-2 items-center'>
+          <div className='flex w-full px-2 mx-auto h-auto justify-between gap-2 items-center'>
             {/* log and deliver */}
             <div className='flex items-center'>
               {/* log and bar */}
               <div className='flex items-center gap-2'>
-                <button className='lg:hidden'>
+                <button
+                  onClick={() => setSlider(!slider)}
+                  className='lg:hidden'
+                >
                   <FaBars className='text-xl' />
                 </button>
                 <div className='border1 p-2'>
@@ -76,7 +121,7 @@ const Header = () => {
               </div>
               {/* deliver and location */}
               <div className='hidden lg:block'>
-                <div className='flex p-2 border1 items-end'>
+                <div className='flex cursor-pointer p-2 border1 items-end'>
                   <FaLocationDot className='text-base ' />
                   <h1 className='text-xs text-gray-400'>
                     Deliver to <br />{' '}
@@ -127,7 +172,7 @@ const Header = () => {
             <div className='flex items-center '>
               {/* flag and language */}
               <div className='hidden lg:block'>
-                <div className='flex items-center border1 p-[14px] gap-1'>
+                <div className='flex cursor-pointer items-center border1 p-[14px] gap-1'>
                   <div>
                     <Image
                       src={
@@ -147,19 +192,21 @@ const Header = () => {
               </div>
               {/* sign in and out */}
               {userInfo ? (
-                <div className='flex items-center border1 cursor-pointer p-2 gap-1'>
-                  <Image
-                    src={userInfo.image}
-                    width={50}
-                    height={50}
-                    alt={userInfo.name}
-                    className='w-8 h-8 rounded-full object-cover '
-                  />
-                  <div className='text-xs text-gray-400'>
-                    <h1 className='font-semibold text-white text-sm'>
-                      {userInfo.name}
-                    </h1>
-                    <p>{userInfo.email}</p>
+                <div className='hidden xs:block'>
+                  <div className='inline-flex  items-center border1 cursor-pointer p-2 gap-1'>
+                    <Image
+                      src={userInfo.image}
+                      width={50}
+                      height={50}
+                      alt={userInfo.name}
+                      className='w-8 h-8 rounded-full object-cover '
+                    />
+                    <div className='text-xs text-gray-400'>
+                      <h1 className='font-semibold text-white text-sm'>
+                        {userInfo.name}
+                      </h1>
+                      <p>{userInfo.email}</p>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -183,7 +230,6 @@ const Header = () => {
                   </div>
                 </div>
               )}
-
               {/* return and order */}
               <div className='border1 p-2 hidden lg:block'>
                 <h1 className='text-xs relative text-gray-400'>
@@ -198,18 +244,19 @@ const Header = () => {
                   )}
                 </h1>
               </div>
-              {/* cart */}
-              <div className='flex border1 p-3 items-end'>
-                <div className='relative'>
-                  <Link href='/cart'>
+              {/* cart */}{' '}
+              <Link href='/cart'>
+                <div className='flex border1 p-3 items-end'>
+                  <div className='relative'>
                     <Image src={cart} alt='cart' width={40} height={26} />
-                  </Link>
-                  <span className='absolute -top-1 text-sm font-bold left-[45%] text-[#f08804]'>
-                    {productData ? productData.length : 0}
-                  </span>
-                </div>
-                <h1 className='font-bold hidden lg:block text-sm'>Cart</h1>
-              </div>
+
+                    <span className='absolute -top-1 text-sm font-bold left-[45%] text-[#f08804]'>
+                      {productData ? productData.length : 0}
+                    </span>
+                  </div>
+                  <h1 className='font-bold hidden lg:block text-sm'>Cart</h1>
+                </div>{' '}
+              </Link>
             </div>
           </div>
         </div>
@@ -240,6 +287,138 @@ const Header = () => {
           </h1>
         </div>
       </div>
+
+      {/* nav slider */}
+      {slider && (
+        <div className='w-full fixed top-0 z-30 left-0 duration-1000 h-screen  bg-black/70'>
+          <div className='w-full h-full relative'>
+            <motion.div
+              initial={{ x: -500, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className={`w-[370px] duration-700 h-screen absolute top-0 left-0 z-40 -trans  bg-gray-100`}
+            >
+              <button
+                onClick={() => setSlider(false)}
+                className='absolute top-5 -right-10 '
+              >
+                <FaTimes className='text-3xl font-light text-white  ' />
+              </button>
+              <div>
+                <div className='bg-slate-900 cursor-pointer  py-4 px-5 text-white'>
+                  {userInfo ? (
+                    <div className='flex items-center cursor-pointer gap-5'>
+                      <Image
+                        src={userInfo.image}
+                        width={40}
+                        height={40}
+                        alt={userInfo.name}
+                        className='rounded-full object-cover '
+                      />
+                      <div className='text-xs text-gray-400'>
+                        <h1 className='font-semibold text-white text-sm'>
+                          {userInfo.name}
+                        </h1>
+                        <p>{userInfo.email}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => signIn()}
+                      className=' flex gap-5 items-center'
+                    >
+                      <FaUserCircle className='text-3xl' />
+                      <p className='text-bold text-lg font-[cursive]'>
+                        Hello, sign In
+                      </p>
+                    </div>
+                  )}
+                  <Link href='/'>
+                    <h1 className='text-xl hover:text-gray-300 mt-4 font-bold'>
+                      Browser <br />
+                      <span className='text-3xl'>Amazon</span>
+                    </h1>
+                  </Link>
+                </div>
+              </div>
+              <div className='overflow-y-scroll h-full text-[#101720]'>
+                <Link href='/'>
+                  <div
+                    onClick={() => setSlider(false)}
+                    className='flex border-b-2 pb-2 items-center justify-between p-3'
+                  >
+                    <h1 className='font-bold text-lg '>Amazon Home</h1>
+
+                    <GoHome className='text-2xl' />
+                  </div>
+                </Link>
+                <div>
+                  {navItems.map((category: MenuItem, index) => (
+                    <div key={index} className='border-b-2 pb-2'>
+                      <h1 className='font-bold p-3 text-lg '>
+                        {category.title}
+                      </h1>
+                      <div>
+                        <ul className='text-[16px]'>
+                          {expandedCategory === category.title
+                            ? category.items.map((item, idx) => (
+                                <li
+                                  key={idx}
+                                  className='py-1 px-3 hover:bg-gray-200 cursor-pointer'
+                                >
+                                  <Link
+                                    className='flex justify-between items-center'
+                                    href={'#'}
+                                  >
+                                    {item}{' '}
+                                    <FaChevronRight className='text-gray-500' />
+                                  </Link>
+                                </li>
+                              ))
+                            : category.items.slice(0, 4).map((item, idx) => (
+                                <li
+                                  key={idx}
+                                  className='py-1 px-3 hover:bg-gray-200 cursor-pointer'
+                                >
+                                  <Link
+                                    className='flex justify-between items-center'
+                                    href={'#'}
+                                  >
+                                    {item}{' '}
+                                    <FaChevronRight className='text-gray-500' />
+                                  </Link>
+                                </li>
+                              ))}
+                        </ul>
+                        {category.items.length > 4 && (
+                          <button
+                            onClick={() => handleClick(category.title)}
+                            className='py-1 px-3 hover:text-black  w-full flex gap-3 items-center hover:bg-gray-200 cursor-pointer'
+                          >
+                            See{' '}
+                            {expandedCategory === category.title
+                              ? 'Less'
+                              : 'All'}{' '}
+                            <FaChevronDown
+                              className={` text-gray-500 duration-700 ${
+                                expandedCategory === category.title
+                                  ? 'rotate-180'
+                                  : 'null'
+                              } `}
+                            />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className='h-[35vh]'></div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

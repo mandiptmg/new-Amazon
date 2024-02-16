@@ -6,7 +6,7 @@ import { FaShoppingCart, FaHeart } from 'react-icons/fa'
 import { FormatPrice } from './FormatePrice'
 import Loading from '@/components/Loading'
 import { useDispatch } from 'react-redux'
-import { addToCart, addToFavourite } from '@/store/nextSlice'
+import { addToCart, addToFavourite, setAllProducts } from '@/store/nextSlice'
 import Link from 'next/link'
 const ProductList = () => {
   const [products, setProducts] = useState<productProps[]>([])
@@ -21,7 +21,7 @@ const ProductList = () => {
         if (!res.ok) {
           throw new Error('Failed to fetch data')
         }
-        const products = await res.json()
+        const products: productProps[] = await res.json()
         setProducts(products)
       } catch (error) {
         if (error instanceof Error) {

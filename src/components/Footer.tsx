@@ -82,7 +82,7 @@ const Footer = () => {
             ))}
           </div>
         </div>
-        <div className='text-center w-full pb-10 text-xs mx-auto text-gray-200'>
+        <div className='text-center w-full md:pt-0 pt-4 pb-10 text-xs mx-auto text-gray-200'>
           <div className='flex justify-center gap-5 '>
             <p>
               <Link className='hover:underline' href='#'>

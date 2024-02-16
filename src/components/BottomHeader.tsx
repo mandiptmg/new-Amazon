@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { signIn, signOut } from 'next-auth/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeUser } from '@/store/nextSlice'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   FaChevronDown,
   FaChevronRight,
@@ -31,13 +31,24 @@ const BottomHeader = () => {
       setExpandedCategory(title)
     }
   }
-  const [menuItem, setMenuItem] = useState(false)
-  // const ref = useRef()
-  // useEffect(()=>{
-  //   document.body.addEventListener('click', (e:MouseEvent) => {
-  //    if(e.target:EventTarget.contains(ref.current)) setMenuItem(false)
-  //   })
-  // },[ref,menuItem])
+  const [menuItem, setMenuItem] = useState<boolean>(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+ useEffect(() => {
+    if (menuItem) {
+      const handler = (e: MouseEvent) => {
+        if (ref.current && !ref.current.contains(e.target as Node)) {
+          setMenuItem(false);
+        }
+      };
+
+      document.addEventListener('click', handler);
+
+      return () => {
+        document.removeEventListener('click', handler);
+      };
+    }
+  }, [menuItem]);
 
   const { userInfo } = useSelector((state: StateProps) => state.next)
   const dispatch = useDispatch()
@@ -81,9 +92,12 @@ const BottomHeader = () => {
 
       {/*slide  menuitem */}
       {menuItem && (
-        <div  className='w-full fixed top-0 z-30 left-0 duration-1000 h-screen  bg-black/70'>
+        <div
+        
+          className='w-full fixed top-0 z-30 left-0 duration-1000 h-screen  bg-black/70'
+        >
           <div className='w-full h-full relative'>
-            <motion.div
+            <motion.div  ref={ref}
               initial={{ x: -500, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}

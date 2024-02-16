@@ -20,7 +20,7 @@ import Link from 'next/link'
 import BottomHeader from './BottomHeader'
 import { StateProps, StoreProduct } from '@/types'
 import { useSession, signIn } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { addUser } from '@/store/nextSlice'
 import SearchProducts from './SearchProducts'
 import { motion } from 'framer-motion'
@@ -35,12 +35,27 @@ interface showAllProps {
 }
 const Header = () => {
   const [allData, setAllData] = useState([])
-  const [slider, setSlider] = useState(false)
-  const [showAll, setShowAll] = useState(false)
-
+  const [slider, setSlider] = useState<boolean>(false)
+  const [showAll, setShowAll] = useState<boolean>(false)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
   const [all, setAll] = useState<string | null>(null)
 
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (slider) {
+      const handler = (e: MouseEvent) => {
+        if (ref.current && !ref.current.contains(e.target as Node)) {
+          setSlider(false)
+        }
+      }
+
+      document.addEventListener('click', handler)
+
+      return () => {
+        document.removeEventListener('click', handler)
+      }
+    }
+  }, [slider])
   const handleClick = (title: string) => {
     if (expandedCategory === title) {
       setExpandedCategory(null)
@@ -54,7 +69,9 @@ const Header = () => {
     (state: StateProps) => state.next
   )
   const [totalQuantity, setTotalQuantity] = useState(0)
-
+useEffect(() => {
+  setAllData(allProducts.allProducts)
+}, [allProducts])
   useEffect(() => {
     let quantity = 0
     productData.map((item: StoreProduct) => {
@@ -94,11 +111,19 @@ const Header = () => {
   // Search area
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredProducts, setFilteredProducts] = useState([])
-
+  useEffect(() => {
+    setAllData(allProducts.allProducts)
+  }, [allProducts])
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
   }
 
+  useEffect(() => {
+    const filtered = allData.filter((item: StoreProduct) =>
+      item.title.toLocaleLowerCase().includes(searchQuery.toLowerCase())
+    )
+    setFilteredProducts(filtered)
+  }, [searchQuery])
 
   return (
     <div>
@@ -299,7 +324,7 @@ const Header = () => {
                     <Image src={cart} alt='cart' width={40} height={26} />
 
                     <span className='absolute -top-[6px] text-sm font-bold left-[45%] text-[#f08804]'>
-                      {productData ? totalQuantity : 0}
+                      {productData ? totalQuantity : null}
                     </span>
                   </div>
                   <h1 className='font-bold hidden lg:block text-sm'>Cart</h1>
@@ -341,10 +366,11 @@ const Header = () => {
         <div className='w-full fixed top-0 z-30 left-0 duration-1000 h-screen  bg-black/70'>
           <div className='w-full h-full relative'>
             <motion.div
+              ref={ref}
               initial={{ x: -500, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className={`w-[290px] duration-700 h-screen absolute top-0 left-0 z-40 -trans  bg-gray-100`}
+              className={`w-[290px]  duration-700 h-screen absolute top-0 left-0 z-40 -trans  bg-gray-100`}
             >
               <button
                 onClick={() => setSlider(false)}

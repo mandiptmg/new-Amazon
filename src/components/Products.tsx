@@ -7,6 +7,7 @@ import { FormatPrice } from './FormatePrice'
 import Loading from '@/components/Loading'
 import { useDispatch } from 'react-redux'
 import { addToCart, addToFavourite } from '@/store/nextSlice'
+import Link from 'next/link'
 const ProductList = () => {
   const [products, setProducts] = useState<productProps[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -56,64 +57,73 @@ const ProductList = () => {
             key={item._id}
             className='bg-white group p-4 overflow-hidden border border-gray-300 rounded-lg  '
           >
-            <div className='relative w-full h-[260px] '>
-              <Image
-                className='w-full h-full object-contain transition-transform duration-500 scale-90 hover:scale-100'
-                src={item.image}
-                alt={item.title}
-                width={300}
-                height={300}
-              />
-              <div className='absolute bottom-20 right-0 duration-500 group-hover:translate-x-0 transition-transform translate-x-20  w-12 h-auto grid text-xl place-items-center rounded-md'>
-                <span
-                  onClick={() =>
-                    dispatch(
-                      addToCart({
-                        _id: item._id,
-                        title: item.title,
-                        description: item.description,
-                        oldPrice: item.oldPrice,
-                        price: item.price,
-                        brand: item.brand,
-                        image: item.image,
-                        isNew: item.isNew,
-                        quantity: 1,
-                      })
-                    )
-                  }
-                  title='cart'
-                  className='p-2 rounded-t-md cursor-pointer hover:bg-orange-400 border border-gray-400 '
-                >
-                  <FaShoppingCart />
-                </span>
-                <span
-                  onClick={() =>
-                    dispatch(
-                      addToFavourite({
-                        _id: item._id,
-                        title: item.title,
-                        description: item.description,
-                        oldPrice: item.oldPrice,
-                        price: item.price,
-                        brand: item.brand,
-                        image: item.image,
-                        isNew: item.isNew,
-                        quantity: 1,
-                      })
-                    )
-                  }
-                  title='favorite'
-                  className='p-2 cursor-pointer rounded-b-md border hover:bg-orange-400 border-gray-400'
-                >
-                  <FaHeart />
-                </span>
+            <Link
+              href={{
+                pathname: `/${item._id}`,
+                query: {
+                  item: JSON.stringify(item),
+                },
+              }}
+            >
+              <div className='relative w-full h-[260px] '>
+                <Image
+                  className='w-full h-full object-contain transition-transform duration-500 scale-90 hover:scale-100'
+                  src={item.image}
+                  alt={item.title}
+                  width={300}
+                  height={300}
+                />
+                <div className='absolute bottom-20 right-0 duration-500 group-hover:translate-x-0 transition-transform translate-x-20  w-12 h-auto grid text-xl place-items-center rounded-md'>
+                  <span
+                    onClick={() =>
+                      dispatch(
+                        addToCart({
+                          _id: item._id,
+                          title: item.title,
+                          description: item.description,
+                          oldPrice: item.oldPrice,
+                          price: item.price,
+                          brand: item.brand,
+                          image: item.image,
+                          isNew: item.isNew,
+                          quantity: 1,
+                        })
+                      )
+                    }
+                    title='cart'
+                    className='p-2 rounded-t-md cursor-pointer hover:bg-orange-400 border border-gray-400 '
+                  >
+                    <FaShoppingCart />
+                  </span>
+                  <span
+                    onClick={() =>
+                      dispatch(
+                        addToFavourite({
+                          _id: item._id,
+                          title: item.title,
+                          description: item.description,
+                          oldPrice: item.oldPrice,
+                          price: item.price,
+                          brand: item.brand,
+                          image: item.image,
+                          isNew: item.isNew,
+                          quantity: 1,
+                        })
+                      )
+                    }
+                    title='favorite'
+                    className='p-2 cursor-pointer rounded-b-md border hover:bg-orange-400 border-gray-400'
+                  >
+                    <FaHeart />
+                  </span>
+                </div>
+                {item.isNew && (
+                  <p className='absolute duration-1000 animate-bounce top-0 right-0'>
+                    !save <FormatPrice amount={item.oldPrice - item.price} />
+                  </p>
+                )}
               </div>
-              {item.isNew && (
-                <p className='absolute duration-1000 animate-bounce top-0 right-0'>
-                  !save <FormatPrice amount={item.oldPrice - item.price} />
-                </p>
-              )}
-            </div>
+            </Link>
             <hr />
             <div className='mt-2'>
               <h1 className='text-gray-400 text-sm'>{item.category}</h1>

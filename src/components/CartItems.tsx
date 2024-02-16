@@ -44,12 +44,7 @@ const CartItems = ({ item }: cartProps) => {
             <p className='text-sm font-light text-justify text-gray-500'>
               {item.description}
             </p>
-            {/* <h1 className='text-gray-400 text-sm '>
-            Unit Price :{' '}
-            <span className='text-black font-semi-bold'>
-              <FormatPrice amount={item.price} />
-            </span>
-          </h1> */}
+           
             <div className='flex items-center gap-4'>
               <div className='flex gap-2 p-2 rounded-xl bg-white items-center'>
                 <button>

@@ -67,14 +67,20 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className='bg-slate-950 text-white'>
-        <div className=' gap-10 py-10 px-16 lg:px-44 grid sm:grid-cols-5 grid-cols-3  lg:grid-cols-7'>
-          {amazonServices.map((section: amazonService) => (
-            <div key={section.id} className='text-left text-xs text-white'>
-              <h2 className='font-bold'>{section.id}</h2>
-              <h2 className='text-gray-400'>{section.description}</h2>
-            </div>
-          ))}
+      <div className='bg-slate-950 text-white '>
+        <div
+          className='
+       md:block hidden'
+        >
+          {' '}
+          <div className=' gap-10 py-10 px-16 lg:px-44 grid sm:grid-cols-5 grid-cols-3  lg:grid-cols-7'>
+            {amazonServices.map((section: amazonService) => (
+              <div key={section.id} className='text-left text-xs text-white'>
+                <h2 className='font-bold'>{section.id}</h2>
+                <h2 className='text-gray-400'>{section.description}</h2>
+              </div>
+            ))}
+          </div>
         </div>
         <div className='text-center w-full pb-10 text-xs mx-auto text-gray-200'>
           <div className='flex justify-center gap-5 '>

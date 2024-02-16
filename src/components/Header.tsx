@@ -15,9 +15,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import Image from 'next/image'
 import logo from '../../public/logo.png'
 import cart from '../../public/cartIcon.png'
+import { showAllData } from '@/data/Data'
 import Link from 'next/link'
 import BottomHeader from './BottomHeader'
-import { usePathname } from 'next/navigation'
 import { StateProps, StoreProduct } from '@/types'
 import { useSession, signIn } from 'next-auth/react'
 import { useEffect, useState } from 'react'
@@ -29,10 +29,17 @@ interface MenuItem {
   title: string
   items: string[]
 }
+interface showAllProps {
+  id: number
+  title: string
+}
 const Header = () => {
   const [allData, setAllData] = useState([])
   const [slider, setSlider] = useState(false)
+  const [showAll, setShowAll] = useState(false)
+
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
+  const [all, setAll] = useState<string | null>(null)
 
   const handleClick = (title: string) => {
     if (expandedCategory === title) {
@@ -46,10 +53,17 @@ const Header = () => {
   const { productData, favouriteData, userInfo, allProducts } = useSelector(
     (state: StateProps) => state.next
   )
-  const dispatch = useDispatch()
+  const [totalQuantity, setTotalQuantity] = useState(0)
+
   useEffect(() => {
-    setAllData(allProducts.allProducts)
-  }, [allProducts])
+    let quantity = 0
+    productData.map((item: StoreProduct) => {
+      quantity += item.quantity
+      return
+    })
+    setTotalQuantity(quantity)
+  }, [productData])
+  const dispatch = useDispatch()
   useEffect(() => {
     if (session) {
       dispatch(
@@ -85,12 +99,6 @@ const Header = () => {
     setSearchQuery(e.target.value)
   }
 
-  // useEffect(() => {
-  //   const filtered = allData.filter((item: StoreProduct) =>
-  //     item.title.toLowerCase().includes(searchQuery.toLowerCase())
-  //   )
-  //   setFilteredProducts(filtered)
-  // }, [searchQuery])
 
   return (
     <div>
@@ -134,38 +142,60 @@ const Header = () => {
             {/* input and buttom */}
 
             <div className='flex-1 h-10 hidden lg:inline-flex items-center justify-between relative'>
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className='rounded-l-md  flex gap-3 items-center text-xs text-[#101720] p-3 bg-gray-300 h-full '
+              >
+                {all || 'All'} <IoMdArrowDropdown />
+              </button>
+              {showAll && (
+                <div className='absolute w-52 h-80 top-10 left-0 z-30 bg-white text-black overflow-x-hidden text-sm overflow-y-scroll'>
+                  <ul>
+                    {showAllData.map((item: showAllProps) => (
+                      <li
+                        onClick={() => {
+                          setAll(item.title)
+                          setShowAll(false)
+                        }}
+                        className='p-1 cursor-pointer hover:bg-gray-200'
+                        key={item.id}
+                        value={item.title}
+                      >
+                        {item.title}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               <input
                 onChange={handleSearch}
                 value={searchQuery}
-                className='w-full h-full rounded-md px-2 placeholder:text-sm text-base text-black  outline-none focus-visible:outline-yellow-500'
+                className='w-full h-full rounded-r-md px-2 placeholder:text-sm text-base text-black  outline-none'
                 type='text'
                 placeholder='Search Amazon'
               />
               <button className='w-12 bg-yellow-500 h-full  text-black text-2xl flex items-center justify-center absolute right-0 rounded-tr-md rounded-br-md'>
                 <FaSearch />
               </button>
-              {searchQuery &&
-                filteredProducts.map((item: StoreProduct) => (
-                  <Link
-                    href={{
-                      pathname: `${item._id}`,
-                      query: {
-                        _id: item._id,
-                        title: item.title,
-                        description: item.description,
-                        oldPrice: item.oldPrice,
-                        price: item.price,
-                        brand: item.brand,
-                        image: item.image,
-                        isNew: item.isNew,
-                      },
-                    }}
-                    onClick={() => setSearchQuery('')}
-                    key={item._id}
-                  >
-                    <SearchProducts item={item} />
-                  </Link>
-                ))}
+              {searchQuery && (
+                <div className='absolute top-12 w-full mx-auto max-h-96 left-0 z-30 bg-gray-200 rounded-lg text-black overflow-x-hidden cursor-pointer overflow-y-scroll'>
+                  {filteredProducts.map((item: StoreProduct) => (
+                    <Link
+                      href={{
+                        pathname: `/${item._id}`,
+                        query: {
+                          item: JSON.stringify(item),
+                        },
+                      }}
+                      onClick={() => setSearchQuery('')}
+                      key={item._id}
+                    >
+                      <SearchProducts item={item} />
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/*flag and language list like signin order and cart */}
@@ -232,17 +262,35 @@ const Header = () => {
               )}
               {/* return and order */}
               <div className='border1 p-2 hidden lg:block'>
-                <h1 className='text-xs relative text-gray-400'>
-                  Returns <br />
-                  <span className='text-sm font-bold text-white'>
-                    & Orders{' '}
-                  </span>
-                  {favouriteData.length > 0 && (
-                    <span className='absolute top-0 text-xs font-bold -right-1 py-[1px] px-[2px] border  text-[#f08804]'>
-                      {favouriteData.length}
-                    </span>
-                  )}
-                </h1>
+                {userInfo ? (
+                  <Link href='/favourite'>
+                    <h1 className='text-xs relative text-gray-400'>
+                      Returns <br />
+                      <span className='text-sm font-bold text-white'>
+                        & Orders{' '}
+                      </span>
+                      {favouriteData.length > 0 && (
+                        <span className='absolute top-0 text-xs font-bold -right-1 py-[1px] px-[2px] border  text-[#f08804]'>
+                          {favouriteData.length}
+                        </span>
+                      )}
+                    </h1>
+                  </Link>
+                ) : (
+                  <div onClick={() => signIn()} className='cursor-pointer'>
+                    <h1 className='text-xs relative text-gray-400'>
+                      Returns <br />
+                      <span className='text-sm font-bold text-white'>
+                        & Orders{' '}
+                      </span>
+                      {favouriteData.length > 0 && (
+                        <span className='absolute top-0 text-xs font-bold -right-1 py-[1px] px-[2px] border  text-[#f08804]'>
+                          {favouriteData.length}
+                        </span>
+                      )}
+                    </h1>
+                  </div>
+                )}
               </div>
               {/* cart */}{' '}
               <Link href='/cart'>
@@ -250,8 +298,8 @@ const Header = () => {
                   <div className='relative'>
                     <Image src={cart} alt='cart' width={40} height={26} />
 
-                    <span className='absolute -top-1 text-sm font-bold left-[45%] text-[#f08804]'>
-                      {productData ? productData.length : 0}
+                    <span className='absolute -top-[6px] text-sm font-bold left-[45%] text-[#f08804]'>
+                      {productData ? totalQuantity : 0}
                     </span>
                   </div>
                   <h1 className='font-bold hidden lg:block text-sm'>Cart</h1>
@@ -420,6 +468,8 @@ const Header = () => {
         </div>
       )}
     </div>
+
+    // all input items
   )
 }
 

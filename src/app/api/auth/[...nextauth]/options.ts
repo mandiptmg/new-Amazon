@@ -16,17 +16,19 @@ export const options: NextAuthOptions = {
     Credentials({
       name: 'Credentials',
       credentials: {
+        name:{label:'Full Name'}
         email: { label: 'Email' },
         password: { label: 'Password' },
       },
       authorize(credentials, req) {
         if (
           credentials?.email === 'admin@example.com' &&
-          credentials?.password === 'admin'
+          credentials?.password === 'admin' && credentials?.name==="admin"
         ) {
           return {
             id: '1',
             email: 'admin@example.com',
+            name:'admin'
           }
         }
         return null

@@ -29,14 +29,14 @@ const CartItems = ({ item }: cartProps) => {
   return (
     <div>
       <div className='flex bg-white p-1 w-full rounded mb-2 border-b items-start justify-between gap-10'>
-        <div className='flex md:flex-row  flex-col py-3 items-center gap-4'>
+        <div className='flex lg:flex-row  flex-col px-2 py-3 items-center gap-4'>
           <div>
             <Image
               src={item.image}
               alt={item.title}
               width={130}
               height={130}
-              className='object-cover aspect-square'
+              className='object-cover w-[180px] h-[180px] lg:h-[130px]  lg:w-[130px] aspect-square'
             />
           </div>
           <div className='space-y-1'>
@@ -44,7 +44,12 @@ const CartItems = ({ item }: cartProps) => {
             <p className='text-sm font-light text-justify text-gray-500'>
               {item.description}
             </p>
-           
+            <p className='text-sm text-gray-600 flex items-center gap-1'>
+              Price:
+              <span className='text-base font-medium'>
+                <FormatPrice amount={item.price} />
+              </span>
+            </p>
             <div className='flex items-center gap-4'>
               <div className='flex gap-2 p-2 rounded-xl bg-white items-center'>
                 <button>
@@ -97,13 +102,13 @@ const CartItems = ({ item }: cartProps) => {
             </div>
           </div>
         </div>
-        <div>
+        <div className='hidden lg:block'>
           <h1 className='font-semibold text-lg'>
             {<FormatPrice amount={item.price} />}
           </h1>
         </div>
       </div>
-     
+
       {/* <h1 className='font-medium text-lg'>
         Subtotal ({item.quantity} item):{' '}
         <span className='font-bold'>

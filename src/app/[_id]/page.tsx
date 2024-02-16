@@ -121,7 +121,7 @@ const Page = () => {
               <div>
                 <p className='text-base text-gray-600 flex items-center gap-1'>
                   Price:
-                  <span className='text-lg text-amazon_blue font-semibold'>
+                  <span className='text-lg font-semibold'>
                     <FormatPrice amount={product.price} />
                   </span>
                   <span className='ml-1 line-through'>

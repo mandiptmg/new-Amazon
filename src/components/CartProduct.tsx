@@ -19,7 +19,7 @@ const CartProduct = () => {
                 <p className='text-lg md:text-2xl   font-semibold text-slate-900'>
                   Shopping Cart
                 </p>
-                <p className='md:text-xl text-lg font-semibold text-slate-900'>
+                <p className='md:text-xl hidden lg:block text-lg font-semibold text-slate-900'>
                   Price
                 </p>
               </div>

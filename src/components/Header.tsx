@@ -344,7 +344,7 @@ const Header = () => {
               initial={{ x: -500, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className={`w-[370px] duration-700 h-screen absolute top-0 left-0 z-40 -trans  bg-gray-100`}
+              className={`w-[290px] duration-700 h-screen absolute top-0 left-0 z-40 -trans  bg-gray-100`}
             >
               <button
                 onClick={() => setSlider(false)}

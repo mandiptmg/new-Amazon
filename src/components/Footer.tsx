@@ -37,7 +37,7 @@ const Footer = () => {
           ))}
         </div>
         <hr />
-        <div className='text-sm  py-10 text-gray-300 flex w-full text-center items-center justify-center gap-10 md:gap-20'>
+        <div className='text-sm  md:px-0 px-2 py-10 text-gray-300 flex w-full text-center items-center justify-center gap-5 md:gap-20'>
           <Link href={'/'}>
             {' '}
             <Image
@@ -48,7 +48,7 @@ const Footer = () => {
               className='object-contain aspect-square '
             />
           </Link>
-          <div className='flex flex-wrap gap-5 items-center'>
+          <div className='flex flex-wrap gap-3 md:gap-5 items-center'>
             <button className='py-1 px-2 items-center flex gap-2 border '>
               <AiOutlineGlobal className='text-white' />
               English
@@ -100,7 +100,7 @@ const Footer = () => {
               </Link>
             </p>
           </div>
-          <p className=''>
+          <p className='md:pt-0 pt-2'>
             &copy; 2023-{time}, Next_Amazon.com, Inc. or its affiliates
           </p>
         </div>

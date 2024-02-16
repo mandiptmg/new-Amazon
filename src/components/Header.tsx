@@ -22,7 +22,7 @@ import { StateProps, StoreProduct } from '@/types'
 import { useSession, signIn } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { addUser } from '@/store/nextSlice'
-import SearchProducts from './SearchProducts'
+// import SearchProducts from './SearchProducts'
 import { motion } from 'framer-motion'
 import { navItems } from '@/data/Data'
 interface MenuItem {

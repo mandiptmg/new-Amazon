@@ -1,20 +1,16 @@
 'use client'
-import { FC } from 'react'
+import { store, persistor } from './Store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'
 import { SessionProvider } from 'next-auth/react'
-import { store, persistor } from './Store'
 
-interface StoreProviderProps {
-  children: React.ReactNode
-  session: any // Update with the actual type for session
-}
-
-const StoreProvider: FC<StoreProviderProps> = ({ children, session }) => {
+const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <SessionProvider>
+        {children}
+        </SessionProvider>
       </PersistGate>
     </Provider>
   )

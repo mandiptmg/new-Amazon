@@ -57,13 +57,13 @@ export const nextSlice = createSlice({
     },
     removeItem: (state, action) => {
       state.productData = state.productData.filter(
-        (item:StoreProduct) => item._id !== action.payload
+        (item: StoreProduct) => item._id !== action.payload
       )
     },
     removeFavourite: (state, action) => {
-     state.favouriteData = state.favouriteData.filter(
-       (item:StoreProduct)=>item._id !== action.payload
-     )
+      state.favouriteData = state.favouriteData.filter(
+        (item: StoreProduct) => item._id !== action.payload
+      )
     },
     resetItem: (state) => {
       state.productData = []

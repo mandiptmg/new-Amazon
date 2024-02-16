@@ -34,7 +34,7 @@ interface showAllProps {
   title: string
 }
 const Header = () => {
-  const [allData, setAllData] = useState([])
+  // const [allData, setAllData] = useState([])
   const [slider, setSlider] = useState<boolean>(false)
   const [showAll, setShowAll] = useState<boolean>(false)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
@@ -65,13 +65,13 @@ const Header = () => {
   }
 
   const { data: session } = useSession()
-  const { productData, favouriteData, userInfo, allProducts } = useSelector(
+  const { productData, favouriteData, userInfo } = useSelector(
     (state: StateProps) => state.next
   )
   const [totalQuantity, setTotalQuantity] = useState(0)
-useEffect(() => {
-  setAllData(allProducts.allProducts)
-}, [allProducts])
+  // useEffect(() => {
+  //   setAllData(allProducts.allProducts)
+  // }, [allProducts])
   useEffect(() => {
     let quantity = 0
     productData.map((item: StoreProduct) => {
@@ -91,7 +91,7 @@ useEffect(() => {
         })
       )
     }
-  }, [session])
+  }, [session, dispatch])
   useEffect(() => {
     const handleChange = () => {
       if (window.innerWidth >= 1024) {
@@ -110,20 +110,18 @@ useEffect(() => {
   }, [])
   // Search area
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredProducts, setFilteredProducts] = useState([])
-  useEffect(() => {
-    setAllData(allProducts.allProducts)
-  }, [allProducts])
+  // const [filteredProducts, setFilteredProducts] = useState([])
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
   }
 
-  useEffect(() => {
-    const filtered = allData.filter((item: StoreProduct) =>
-      item.title.toLocaleLowerCase().includes(searchQuery.toLowerCase())
-    )
-    setFilteredProducts(filtered)
-  }, [searchQuery])
+  // useEffect(() => {
+  //   const filtered = allData.filter((item: StoreProduct) =>
+  //     item.title.toLocaleLowerCase().includes(searchQuery.toLowerCase())
+  //   )
+  //   setFilteredProducts(filtered)
+  // }, [allData,searchQuery])
 
   return (
     <div>
@@ -203,7 +201,7 @@ useEffect(() => {
               <button className='w-12 bg-yellow-500 h-full  text-black text-2xl flex items-center justify-center absolute right-0 rounded-tr-md rounded-br-md'>
                 <FaSearch />
               </button>
-              {searchQuery && (
+              {/* {searchQuery && (
                 <div className='absolute top-12 w-full mx-auto max-h-96 left-0 z-30 bg-gray-200 rounded-lg text-black overflow-x-hidden cursor-pointer overflow-y-scroll'>
                   {filteredProducts.map((item: StoreProduct) => (
                     <Link
@@ -220,7 +218,7 @@ useEffect(() => {
                     </Link>
                   ))}
                 </div>
-              )}
+              )} */}
             </div>
 
             {/*flag and language list like signin order and cart */}

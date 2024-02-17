@@ -41,11 +41,14 @@ const Header = () => {
   const [all, setAll] = useState<string | null>(null)
 
   const ref = useRef<HTMLDivElement>(null)
+  const ulRef = useRef<HTMLUListElement>(null)
   useEffect(() => {
-    if (slider) {
+    if (slider || showAll) {
       const handler = (e: MouseEvent) => {
         if (ref.current && !ref.current.contains(e.target as Node)) {
           setSlider(false)
+        } else if (ulRef.current && !ulRef.current.contains(e.target as Node)) {
+          setShowAll(false)
         }
       }
 
@@ -55,7 +58,7 @@ const Header = () => {
         document.removeEventListener('click', handler)
       }
     }
-  }, [slider])
+  }, [slider, showAll])
   const handleClick = (title: string) => {
     if (expandedCategory === title) {
       setExpandedCategory(null)
@@ -136,16 +139,16 @@ const Header = () => {
                   onClick={() => setSlider(!slider)}
                   className='lg:hidden'
                 >
-                  <FaBars className='text-xl' />
+                  <FaBars className='text-2xl' />
                 </button>
-                <div className='border1 p-2'>
+                <div className='border1 px-2'>
                   <Link href='/'>
                     <Image
                       src={logo}
                       alt='logo'
                       width={113}
                       height={50}
-                      className='aspect-auto'
+                      className='aspect-auto object-contain sm:w-[108px] sm:h-[50px] mt-1 w-[80px] h-[38px]'
                     />
                   </Link>
                 </div>
@@ -164,16 +167,16 @@ const Header = () => {
 
             {/* input and buttom */}
 
-            <div className='flex-1 h-10 hidden lg:inline-flex items-center justify-between relative'>
+            <div className='flex-1 h-10 relative w-[550px] hidden lg:inline-flex items-center justify-between'>
               <button
                 onClick={() => setShowAll(!showAll)}
-                className='rounded-l-md  flex gap-3 items-center text-xs text-[#101720] p-3 bg-gray-300 h-full '
+                className='rounded-l-md flex-1 inline-flex w-full gap-3 items-center text-xs text-[#101720] p-3 bg-gray-300 h-full '
               >
-                {all || 'All'} <IoMdArrowDropdown />
+                {all || 'All'} <IoMdArrowDropdown className='text-sm' />
               </button>
               {showAll && (
-                <div className='absolute w-52 h-80 top-10 left-0 z-30 bg-white text-black overflow-x-hidden text-sm overflow-y-scroll'>
-                  <ul>
+                <div className='absolute w-52  h-80 top-10 left-0 z-40 bg-white text-black overflow-x-hidden text-sm overflow-y-scroll'>
+                  <ul ref={ulRef}>
                     {showAllData.map((item: showAllProps) => (
                       <li
                         onClick={() => {
@@ -194,11 +197,11 @@ const Header = () => {
               <input
                 onChange={handleSearch}
                 value={searchQuery}
-                className='w-full h-full rounded-r-md px-2 placeholder:text-sm text-base text-black  outline-none'
+                className='w-full h-full px-2 placeholder:text-base text-base text-black  outline-none'
                 type='text'
                 placeholder='Search Amazon'
               />
-              <button className='w-12 bg-yellow-500 h-full  text-black text-2xl flex items-center justify-center absolute right-0 rounded-tr-md rounded-br-md'>
+              <button className='w-12 grid place-items-center bg-yellow-500 h-full text-black text-2xl rounded-r-md'>
                 <FaSearch />
               </button>
               {/* {searchQuery && (
@@ -277,9 +280,9 @@ const Header = () => {
                     </h1>
                   </div>
                   <div className='flex  lg:hidden gap-1 items-center'>
-                    <h1 className='text-sm font-bold'>Sign In</h1>
+                    <h1 className='text-sm font-medium'>Sign In</h1>
                     <IoIosArrowForward className='text-sm' />
-                    <FaRegUser className='text-xl' />
+                    <FaRegUser className='text-2xl' />
                   </div>
                 </div>
               )}

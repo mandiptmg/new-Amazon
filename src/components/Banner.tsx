@@ -24,28 +24,28 @@ const Banner = () => {
             priority
             src={sliderImg_1}
             alt='sliderImg'
-            className='object-cover w-screen h-[80vh]  '
+            className='object-cover w-screen h-[90vh]  '
           />
         </div>
         <div>
           <Image
             src={sliderImg_2}
             alt='sliderImg'
-            className='object-cover w-screen h-[80vh]  '
+            className='object-cover w-screen h-[90vh]  '
           />
         </div>
         <div>
           <Image
             src={sliderImg_3}
             alt='sliderImg'
-            className='object-cover w-screen h-[80vh]  '
+            className='object-cover w-screen h-[90vh]  '
           />
         </div>
         <div>
           <Image
             src={sliderImg_4}
             alt='sliderImg'
-            className='object-cover w-screen h-[80vh]  '
+            className='object-cover w-screen h-[90vh]  '
           />
         </div>
       </Carousel>

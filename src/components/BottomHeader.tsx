@@ -34,21 +34,21 @@ const BottomHeader = () => {
   const [menuItem, setMenuItem] = useState<boolean>(false)
   const ref = useRef<HTMLDivElement>(null)
 
- useEffect(() => {
+  useEffect(() => {
     if (menuItem) {
       const handler = (e: MouseEvent) => {
         if (ref.current && !ref.current.contains(e.target as Node)) {
-          setMenuItem(false);
+          setMenuItem(false)
         }
-      };
+      }
 
-      document.addEventListener('click', handler);
+      document.addEventListener('click', handler)
 
       return () => {
-        document.removeEventListener('click', handler);
-      };
+        document.removeEventListener('click', handler)
+      }
     }
-  }, [menuItem]);
+  }, [menuItem])
 
   const { userInfo } = useSelector((state: StateProps) => state.next)
   const dispatch = useDispatch()
@@ -58,46 +58,46 @@ const BottomHeader = () => {
   }
   return (
     <div>
-      <div className='w-full h-10 text-sm text-white px-2 flex items-center'>
-        <p
-          onClick={() => setMenuItem(!menuItem)}
-          className='hidden md:inline-flex  items-center gap-1 h-8 px-2 border border-transparent hover:border-white cursor-pointer duration-300 text-xs sm:text-sm md:text-base'
-        >
-          <LuMenu className='text-xl' /> All
-        </p>
-        <p className='inline-flex items-center h-8 px-2 border border-transparent hover:border-white cursor-pointer duration-300 text-xs sm:text-sm md:text-base'>
-          Todays Deals
-        </p>
-        <p className='inline-flex items-center h-8 px-2 border border-transparent hover:border-white cursor-pointer duration-300 text-xs sm:text-sm md:text-base'>
-          Customer Service
-        </p>
-        <p className='inline-flex items-center h-8 px-2 border border-transparent hover:border-white cursor-pointer duration-300 text-xs sm:text-sm md:text-base'>
-          Registry
-        </p>
-        <p className='inline-flex items-center h-8 px-2 border border-transparent hover:border-white cursor-pointer duration-300 text-xs sm:text-sm md:text-base'>
-          Gift Cards
-        </p>
-        <p className='inline-flex items-center h-8 px-2 border border-transparent hover:border-white cursor-pointer duration-300 text-xs sm:text-sm md:text-base'>
-          Sell
-        </p>
-        {userInfo ? (
-          <p
-            onClick={handleSignOut}
-            className='inline-flex items-center h-8 px-2 border border-transparent hover:border-white cursor-pointer duration-300 text-yellow-500 text-xs sm:text-sm md:text-base'
+      <div className='w-full md:overflow-hidden overflow-x-scroll'>
+        <ul className='inline-flex text-white  text-base sm:w-full w-[550px] items-start py-1 mx-auto'>
+          <li
+            className='hidden lg:inline-flex items-center gap-1 px-2 py-1 border border-transparent hover:border-white '
+            onClick={() => setMenuItem(!menuItem)}
           >
-            SignOut
-          </p>
-        ) : null}
+            <LuMenu className='text-2xl ' /> All
+          </li>
+          <li className='cursor-pointer px-2 py-1 border border-transparent hover:border-white  '>
+            Todays Deals
+          </li>
+          <li className='cursor-pointer px-2 py-1 border border-transparent hover:border-white '>
+            Customer Service
+          </li>
+          <li className='cursor-pointer px-2 py-1 border border-transparent hover:border-white '>
+            Registry
+          </li>
+          <li className='cursor-pointer px-2 py-1 border border-transparent hover:border-white '>
+            Gift Cards
+          </li>
+          <li className='cursor-pointer px-2 py-1 border border-transparent hover:border-white '>
+            Sell
+          </li>
+          {userInfo ? (
+            <li
+              onClick={handleSignOut}
+              className='text-yellow-500 cursor-pointer px-2 py-1 border border-transparent hover:border-white '
+            >
+              SignOut
+            </li>
+          ) : null}
+        </ul>
       </div>
 
       {/*slide  menuitem */}
       {menuItem && (
-        <div
-        
-          className='w-full fixed top-0 z-30 left-0 duration-1000 h-screen  bg-black/70'
-        >
+        <div className='w-full fixed top-0 z-30 left-0 duration-1000 h-screen  bg-black/70'>
           <div className='w-full h-full relative'>
-            <motion.div  ref={ref}
+            <motion.div
+              ref={ref}
               initial={{ x: -500, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}

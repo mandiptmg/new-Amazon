@@ -51,7 +51,7 @@ const ProductList = () => {
 
   return (
     <div className=' w-full h-full bg-gray-300 pb-10  '>
-      <div className='grid w-[90vw] md:container mx-auto sm:grid-cols-2 relative z-20 -mt-72 md:-mt-60 md:grid-cols-3 gap-3 lg:grid-cols-4 items-center'>
+      <div className='grid w-[90vw] md:container mx-auto sm:grid-cols-2 relative z-20  -mt-[22rem] md:grid-cols-3 gap-3 lg:grid-cols-4 items-center'>
         {products.map((item: productProps) => (
           <div
             key={item._id}

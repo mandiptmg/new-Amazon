@@ -23,6 +23,7 @@ const ProductList = () => {
         }
         const products: productProps[] = await res.json()
         setProducts(products)
+        dispatch(setAllProducts(products))
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message)
@@ -35,7 +36,7 @@ const ProductList = () => {
     }
 
     fetchData()
-  }, [])
+  }, [dispatch])
 
   if (loading) {
     return (

@@ -78,7 +78,7 @@ export const nextSlice = createSlice({
       state.userInfo = null
     },
     setAllProducts: (state, action) => {
-      state.allProducts === action.payload
+      state.allProducts = action.payload
     },
   },
 })

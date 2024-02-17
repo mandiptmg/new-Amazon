@@ -18,13 +18,13 @@ import cart from '../../public/cartIcon.png'
 import { showAllData } from '@/data/Data'
 import Link from 'next/link'
 import BottomHeader from './BottomHeader'
-import { StateProps, StoreProduct } from '@/types'
+import { StateProps, StoreProduct, productProps } from '@/types'
 import { useSession, signIn } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { addUser } from '@/store/nextSlice'
-// import SearchProducts from './SearchProducts'
 import { motion } from 'framer-motion'
 import { navItems } from '@/data/Data'
+import SearchProducts from './SearchProducts'
 interface MenuItem {
   title: string
   items: string[]
@@ -34,7 +34,7 @@ interface showAllProps {
   title: string
 }
 const Header = () => {
-  // const [allData, setAllData] = useState([])
+  const [allData, setAllData] = useState([])
   const [slider, setSlider] = useState<boolean>(false)
   const [showAll, setShowAll] = useState<boolean>(false)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
@@ -68,13 +68,14 @@ const Header = () => {
   }
 
   const { data: session } = useSession()
-  const { productData, favouriteData, userInfo } = useSelector(
+  const { productData, favouriteData, userInfo, allProducts } = useSelector(
     (state: StateProps) => state.next
   )
+
   const [totalQuantity, setTotalQuantity] = useState(0)
-  // useEffect(() => {
-  //   setAllData(allProducts.allProducts)
-  // }, [allProducts])
+  useEffect(() => {
+    setAllData(allProducts)
+  }, [allProducts])
   useEffect(() => {
     let quantity = 0
     productData.map((item: StoreProduct) => {
@@ -113,19 +114,17 @@ const Header = () => {
   }, [])
   // Search area
   const [searchQuery, setSearchQuery] = useState('')
-  // const [filteredProducts, setFilteredProducts] = useState([])
+  const [filteredProducts, setFilteredProducts] = useState([])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
   }
-
-  // useEffect(() => {
-  //   const filtered = allData.filter((item: StoreProduct) =>
-  //     item.title.toLocaleLowerCase().includes(searchQuery.toLowerCase())
-  //   )
-  //   setFilteredProducts(filtered)
-  // }, [allData,searchQuery])
-
+   useEffect(() => {
+    const filtered = allData.filter((item: StoreProduct) =>
+      item.title.toLocaleLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  },[searchQuery,allData]);
   return (
     <div>
       <div className='bg-slate-950 text-white p-1 '>
@@ -204,24 +203,39 @@ const Header = () => {
               <button className='w-12 grid place-items-center bg-yellow-500 h-full text-black text-2xl rounded-r-md'>
                 <FaSearch />
               </button>
-              {/* {searchQuery && (
-                <div className='absolute top-12 w-full mx-auto max-h-96 left-0 z-30 bg-gray-200 rounded-lg text-black overflow-x-hidden cursor-pointer overflow-y-scroll'>
-                  {filteredProducts.map((item: StoreProduct) => (
-                    <Link
-                      href={{
-                        pathname: `/${item._id}`,
-                        query: {
-                          item: JSON.stringify(item),
-                        },
-                      }}
-                      onClick={() => setSearchQuery('')}
-                      key={item._id}
-                    >
-                      <SearchProducts item={item} />
-                    </Link>
-                  ))}
+              {/* searchfield */}
+              {searchQuery && (
+                <div className='absolute left-0 z-40 top-12 w-full mx-auto max-h-96 bg-gray-200 rounded-lg overflow-y-scroll cursor-pointer text-black'>
+                  {filteredProducts.length > 0 ? (
+                    <>
+                      {searchQuery &&
+                        filteredProducts.map((item: StoreProduct) => (
+                          <Link
+                            key={item._id}
+                            className='w-full border-b-[1px] border-b-gray-400 flex items-center gap-4'
+                            href={{
+                              pathname: `${item._id}`,
+
+                              query: {
+                                item: JSON.stringify(item),
+                              },
+                            }}
+                            onClick={() => setSearchQuery('')}
+                          >
+                            <SearchProducts item={item} />
+                          </Link>
+                        ))}
+                    </>
+                  ) : (
+                    <div className='bg-gray-50 flex items-center justify-center py-10 rounded-lg shadow-lg'>
+                      <p className='text-xl font-semibold animate-bounce'>
+                        Nothing is matches with your search keywords. Please try
+                        again!
+                      </p>
+                    </div>
+                  )}
                 </div>
-              )} */}
+              )}
             </div>
 
             {/*flag and language list like signin order and cart */}
@@ -335,9 +349,11 @@ const Header = () => {
           </div>
         </div>
         {/* responsive input  */}
-        <div className='w-full mt-1 px-1 lg:hidden'>
+        <div className='w-full relative mt-1 px-1 lg:hidden'>
           <form className='flex items-center'>
             <input
+            value={searchQuery}
+            onChange={handleSearch}
               type='text'
               className='px-[10px] w-full text-black py-[7px] rounded-l outline-none'
               placeholder='search amazon'
@@ -346,6 +362,38 @@ const Header = () => {
               <FaSearch className='text-2xl text-gray-800  ' />
             </button>
           </form>
+           {searchQuery && (
+                <div className='absolute left-0 z-40 top-12 w-full mx-auto max-h-96 bg-gray-200 rounded-lg overflow-y-scroll cursor-pointer text-black'>
+                  {filteredProducts.length > 0 ? (
+                    <>
+                      {searchQuery &&
+                        filteredProducts.map((item: StoreProduct) => (
+                          <Link
+                            key={item._id}
+                            className='w-full border-b-[1px] border-b-gray-400 flex items-center gap-4'
+                            href={{
+                              pathname: `${item._id}`,
+
+                              query: {
+                                item: JSON.stringify(item),
+                              },
+                            }}
+                            onClick={() => setSearchQuery('')}
+                          >
+                            <SearchProducts item={item} />
+                          </Link>
+                        ))}
+                    </>
+                  ) : (
+                    <div className='bg-gray-50 flex items-center justify-center py-10 rounded-lg shadow-lg'>
+                      <p className='text-xl font-semibold animate-bounce'>
+                        Nothing is matches with your search keywords. Please try
+                        again!
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
         </div>
         {/* bottom Header */}
         <div className='lg:hidden'>
@@ -354,7 +402,7 @@ const Header = () => {
       </div>
       {/* bottom location and delivery */}
       <div className='lg:hidden text-white px-4 py-2 bg-slate-700'>
-        <div className='flex border1 items-center gap-2'>
+        <div className='flex border1 px-2 items-center gap-2'>
           <FaLocationDot className='text-lg ' />
           <h1 className='text-white text-base font-semibold '>
             Deliver to Nepal
